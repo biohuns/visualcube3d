@@ -3,6 +3,8 @@ module github.com/c20820/visualcube3d
 go 1.15
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/qmuntal/gltf v0.15.0
 	github.com/rakyll/statik v0.1.7
