@@ -9,7 +9,6 @@ import (
 	"github.com/rakyll/statik/fs"
 
 	"github.com/qmuntal/gltf"
-	"github.com/qmuntal/gltf/ext/unlit"
 	"github.com/westphae/quaternion"
 )
 
@@ -83,59 +82,79 @@ var (
 	quaternionU2   = quaternion.FromEuler(0, degree180, 0)
 	quaternionF2   = quaternion.FromEuler(-degree180, 0, 0)
 	quaternionL2   = quaternion.FromEuler(0, 0, -degree180)
-
-	document      *gltf.Document
-	binDocument   *gltf.Document
-	definition    *Definition
-	binDefinition *Definition
 )
 
-func Init() error {
-	statikFS, err := fs.New()
-	if err != nil {
-		return err
-	}
-	fs.Walk(statikFS, "", func(path string, info os.FileInfo, err error) error {
+func initCube() error {
+	//statikFS, err := fs.New()
+	//if err != nil {
+	//	return err
+	//}
 
-	})
+	//gltfDefault, _ := statikFS.Open("cube.gltf")
+	//glbDefault, _ := statikFS.Open("cube.glb")
+	//gltfUnlit, _ := statikFS.Open("cube_unlit.gltf")
+	//glbUnlit, _ := statikFS.Open("cube_unlit.glb")
+	//gltf.NewDecoder(glbDefault)
+	//gltf.NewDecoder(gltfUnlit)
+	//gltf.NewDecoder(glbUnlit)
 
-	gltf.RegisterExtension(unlit.ExtensionName, unlit.Unmarshal)
-
-	document, err = gltf.Open(config.Shared.Model.FilePath)
-	if err != nil {
-		return err
-	}
-
-	if definition, err = nodeToDefinition(document.Nodes); err != nil {
-		return err
-	}
-
-	binDocument, err = gltf.Open(config.Shared.Model.BinaryFilePath)
-	if err != nil {
-		return err
-	}
-
-	if binDefinition, err = nodeToDefinition(document.Nodes); err != nil {
-		return err
-	}
+	//if definition, err = nodeToDefinition(document.Nodes); err != nil {
+	//	return err
+	//}
+	//
+	//binDocument, err = gltf.Open(config.Shared.Model.BinaryFilePath)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//if binDefinition, err = nodeToDefinition(document.Nodes); err != nil {
+	//	return err
+	//}
 
 	return nil
 }
 
 func Generate(algorithm []string, isBinary bool, isUnlit bool) ([]byte, error) {
-	fs.New()
-	var (
-		doc gltf.Document
-		def Definition
-	)
+	//var (
+	//	doc gltf.Document
+	//	def Definition
+	//)
 
-	if isBinary {
-		doc = *binDocument
-		def = *binDefinition
-	} else {
-		doc = *document
-		def = *definition
+	//if isBinary {
+	//	doc = *binDocument
+	//	def = *binDefinition
+	//} else {
+	//	doc = *document
+	//	def = *definition
+	//}
+
+	statikFS, err := fs.New()
+	if err != nil {
+		return nil, err
 	}
+
+	fs.Walk(statikFS, "/", func(path string, info os.FileInfo, err error) error {
+		fmt.Println("---")
+		fmt.Println(path)
+		return nil
+	})
+
+	gltfDefault, err := statikFS.Open("/cube.gltf")
+	if err != nil {
+		return nil, err
+	}
+
+	doc := new(gltf.Document)
+	if err := gltf.NewDecoder(gltfDefault).Decode(doc); err != nil {
+		return nil, err
+	}
+
+	defPtr, err := nodeToDefinition(doc.Nodes)
+	if err != nil {
+		return nil, err
+	}
+
+	def := *defPtr
 
 	degrees, err := parseAlg(algorithm)
 	if err != nil {
@@ -161,7 +180,7 @@ func Generate(algorithm []string, isBinary bool, isUnlit bool) ([]byte, error) {
 	buffer := new(bytes.Buffer)
 	e := gltf.NewEncoder(buffer)
 	e.AsBinary = isBinary
-	if err := e.Encode(&doc); err != nil {
+	if err := e.Encode(doc); err != nil {
 		return nil, err
 	}
 
