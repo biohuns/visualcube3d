@@ -141,6 +141,7 @@ func generateCube(algorithm []string) ([]byte, error) {
 
 	buffer := new(bytes.Buffer)
 	e := gltf.NewEncoder(buffer)
+	e.AsBinary = false
 	if err := e.Encode(&doc); err != nil {
 		return nil, err
 	}
