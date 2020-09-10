@@ -35,7 +35,7 @@ func getCubeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", ContentTypeGltf)
-	w.Write(data)
+	_, _ = w.Write(data)
 }
 
 var allowedAlg = [18]string{
@@ -55,8 +55,9 @@ func bindGetCubeHandlerRequest(urlValues url.Values) (*request, error) {
 		algSlice := strings.Split(alg, " ")
 		for _, a := range algSlice {
 			ok := false
+			upper := strings.ToUpper(a)
 			for _, allowed := range allowedAlg {
-				if a == allowed {
+				if upper == allowed {
 					ok = true
 				}
 			}
