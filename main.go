@@ -23,6 +23,10 @@ func main() {
 		log.Fatalln("$PORT must be set")
 	}
 
+	if err := initCube(); err != nil {
+		log.Fatalf("cube initialize error: %v", err)
+	}
+
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
