@@ -1,0 +1,26 @@
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+# github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a
+## explicit
+github.com/getlantern/deepcopy
+# github.com/go-chi/chi v4.1.2+incompatible
+## explicit
+github.com/go-chi/chi
+github.com/go-chi/chi/middleware
+# github.com/go-chi/cors v1.1.1
+## explicit
+github.com/go-chi/cors
+# github.com/go-chi/render v1.0.1
+## explicit
+github.com/go-chi/render
+# github.com/qmuntal/gltf v0.15.0
+## explicit
+github.com/qmuntal/gltf
+# github.com/rakyll/statik v0.1.7
+## explicit
+github.com/rakyll/statik/fs
+# github.com/westphae/quaternion v0.0.0-20190804192539-eb19a71cb818
+## explicit
+github.com/westphae/quaternion
+# golang.org/x/net v0.0.0-20200904194848-62affa334b73
+## explicit
