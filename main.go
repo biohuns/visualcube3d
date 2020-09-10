@@ -10,6 +10,7 @@ import (
 	_ "github.com/c20820/visualcube3d/statik"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 )
 
 //go:generate statik -src gltf
@@ -34,6 +35,8 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.URLFormat)
 	r.Use(middleware.Timeout(10 * time.Second))
+	r.Use(cors.AllowAll().Handler)
+	r.Use(middleware.Compress(5, ContentTypeGltf, ContentTypeGlb))
 
 	r.Get("/cube", getCubeHandler)
 
