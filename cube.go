@@ -4,48 +4,45 @@ import (
 	"bytes"
 	"fmt"
 	"math"
-	"os"
 
-	"github.com/rakyll/statik/fs"
-
+	"github.com/getlantern/deepcopy"
 	"github.com/qmuntal/gltf"
+	"github.com/rakyll/statik/fs"
 	"github.com/westphae/quaternion"
 )
 
-type (
-	Definition struct {
-		UBL gltf.Node `json:"UBL"`
-		UBM gltf.Node `json:"UBM"`
-		UBR gltf.Node `json:"UBR"`
-		UML gltf.Node `json:"UML"`
-		UMM gltf.Node `json:"UMM"`
-		UMR gltf.Node `json:"UMR"`
-		UFL gltf.Node `json:"UFL"`
-		UFM gltf.Node `json:"UFM"`
-		UFR gltf.Node `json:"UFR"`
-		MBL gltf.Node `json:"MBL"`
-		MBM gltf.Node `json:"MBM"`
-		MBR gltf.Node `json:"MBR"`
-		MML gltf.Node `json:"MML"`
-		MMR gltf.Node `json:"MMR"`
-		MFL gltf.Node `json:"MFL"`
-		MFM gltf.Node `json:"MFM"`
-		MFR gltf.Node `json:"MFR"`
-		DBL gltf.Node `json:"DBL"`
-		DBM gltf.Node `json:"DBM"`
-		DBR gltf.Node `json:"DBR"`
-		DML gltf.Node `json:"DML"`
-		DMM gltf.Node `json:"DMM"`
-		DMR gltf.Node `json:"DMR"`
-		DFL gltf.Node `json:"DFL"`
-		DFM gltf.Node `json:"DFM"`
-		DFR gltf.Node `json:"DFR"`
-	}
+type Definition struct {
+	UBL gltf.Node `json:"UBL"`
+	UBM gltf.Node `json:"UBM"`
+	UBR gltf.Node `json:"UBR"`
+	UML gltf.Node `json:"UML"`
+	UMM gltf.Node `json:"UMM"`
+	UMR gltf.Node `json:"UMR"`
+	UFL gltf.Node `json:"UFL"`
+	UFM gltf.Node `json:"UFM"`
+	UFR gltf.Node `json:"UFR"`
+	MBL gltf.Node `json:"MBL"`
+	MBM gltf.Node `json:"MBM"`
+	MBR gltf.Node `json:"MBR"`
+	MML gltf.Node `json:"MML"`
+	MMR gltf.Node `json:"MMR"`
+	MFL gltf.Node `json:"MFL"`
+	MFM gltf.Node `json:"MFM"`
+	MFR gltf.Node `json:"MFR"`
+	DBL gltf.Node `json:"DBL"`
+	DBM gltf.Node `json:"DBM"`
+	DBR gltf.Node `json:"DBR"`
+	DML gltf.Node `json:"DML"`
+	DMM gltf.Node `json:"DMM"`
+	DMR gltf.Node `json:"DMR"`
+	DFL gltf.Node `json:"DFL"`
+	DFM gltf.Node `json:"DFM"`
+	DFR gltf.Node `json:"DFR"`
+}
 
-	Degree int
+type Degree int
 
-	Rotation [4]float64
-)
+type Rotation [4]float64
 
 const (
 	rotateRightU Degree = iota
@@ -66,7 +63,9 @@ const (
 	rotateB2
 	rotateL2
 	rotateR2
+)
 
+const (
 	degree90  = math.Pi / 2
 	degree180 = math.Pi
 )
@@ -84,77 +83,76 @@ var (
 	quaternionL2   = quaternion.FromEuler(0, 0, -degree180)
 )
 
+var (
+	gltfDefaultDoc = new(gltf.Document)
+	glbDefaultDoc  = new(gltf.Document)
+	gltfUnlitDoc   = new(gltf.Document)
+	glbUnlitDoc    = new(gltf.Document)
+)
+
 func initCube() error {
-	//statikFS, err := fs.New()
-	//if err != nil {
-	//	return err
-	//}
+	sFS, err := fs.New()
+	if err != nil {
+		return err
+	}
 
-	//gltfDefault, _ := statikFS.Open("cube.gltf")
-	//glbDefault, _ := statikFS.Open("cube.glb")
-	//gltfUnlit, _ := statikFS.Open("cube_unlit.gltf")
-	//glbUnlit, _ := statikFS.Open("cube_unlit.glb")
-	//gltf.NewDecoder(glbDefault)
-	//gltf.NewDecoder(gltfUnlit)
-	//gltf.NewDecoder(glbUnlit)
+	gltfDefault, err := sFS.Open("/cube.gltf")
+	if err != nil {
+		return err
+	}
+	if err := gltf.NewDecoder(gltfDefault).Decode(gltfDefaultDoc); err != nil {
+		return err
+	}
 
-	//if definition, err = nodeToDefinition(document.Nodes); err != nil {
-	//	return err
-	//}
-	//
-	//binDocument, err = gltf.Open(config.Shared.Model.BinaryFilePath)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//if binDefinition, err = nodeToDefinition(document.Nodes); err != nil {
-	//	return err
-	//}
+	glbDefault, err := sFS.Open("/cube.glb")
+	if err != nil {
+		return err
+	}
+	if err := gltf.NewDecoder(glbDefault).Decode(glbDefaultDoc); err != nil {
+		return err
+	}
+
+	gltfUnlit, err := sFS.Open("/cube_unlit.gltf")
+	if err != nil {
+		return err
+	}
+	if err := gltf.NewDecoder(gltfUnlit).Decode(gltfUnlitDoc); err != nil {
+		return err
+	}
+
+	glbUnlit, err := sFS.Open("/cube_unlit.glb")
+	if err != nil {
+		return err
+	}
+	if err := gltf.NewDecoder(glbUnlit).Decode(glbUnlitDoc); err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func Generate(algorithm []string, isBinary bool, isUnlit bool) ([]byte, error) {
-	//var (
-	//	doc gltf.Document
-	//	def Definition
-	//)
+func generateCube(algorithm []string, isBinary bool, isUnlit bool) ([]byte, error) {
+	var (
+		doc gltf.Document
+		err error
+		def *Definition
+	)
 
-	//if isBinary {
-	//	doc = *binDocument
-	//	def = *binDefinition
-	//} else {
-	//	doc = *document
-	//	def = *definition
-	//}
+	switch {
+	case isBinary && isUnlit:
+		err = deepcopy.Copy(&doc, glbUnlitDoc)
+	case isBinary:
+		err = deepcopy.Copy(&doc, glbDefaultDoc)
+	case isUnlit:
+		err = deepcopy.Copy(&doc, gltfUnlitDoc)
+	default:
+		err = deepcopy.Copy(&doc, gltfDefaultDoc)
+	}
 
-	statikFS, err := fs.New()
+	def, err = nodeToDefinition(doc.Nodes)
 	if err != nil {
 		return nil, err
 	}
-
-	fs.Walk(statikFS, "/", func(path string, info os.FileInfo, err error) error {
-		fmt.Println("---")
-		fmt.Println(path)
-		return nil
-	})
-
-	gltfDefault, err := statikFS.Open("/cube.gltf")
-	if err != nil {
-		return nil, err
-	}
-
-	doc := new(gltf.Document)
-	if err := gltf.NewDecoder(gltfDefault).Decode(doc); err != nil {
-		return nil, err
-	}
-
-	defPtr, err := nodeToDefinition(doc.Nodes)
-	if err != nil {
-		return nil, err
-	}
-
-	def := *defPtr
 
 	degrees, err := parseAlg(algorithm)
 	if err != nil {
@@ -162,7 +160,7 @@ func Generate(algorithm []string, isBinary bool, isUnlit bool) ([]byte, error) {
 	}
 
 	for _, d := range degrees {
-		def = rotate(def, d)
+		rotate(def, d)
 	}
 
 	doc.Nodes = []*gltf.Node{
@@ -180,7 +178,7 @@ func Generate(algorithm []string, isBinary bool, isUnlit bool) ([]byte, error) {
 	buffer := new(bytes.Buffer)
 	e := gltf.NewEncoder(buffer)
 	e.AsBinary = isBinary
-	if err := e.Encode(doc); err != nil {
+	if err := e.Encode(&doc); err != nil {
 		return nil, err
 	}
 
@@ -306,7 +304,7 @@ func parseAlg(alg []string) ([]Degree, error) {
 }
 
 // rotate 回転する面に合わせて、対象の gltf.Node に回転処理を行う
-func rotate(def Definition, degree Degree) Definition {
+func rotate(def *Definition, degree Degree) {
 	switch degree {
 	case rotateRightU, rotateU2, rotateLeftU:
 		def.UBL, def.UBM, def.UBR,
@@ -368,8 +366,6 @@ func rotate(def Definition, degree Degree) Definition {
 				def.DFR, def.DMR, def.DBR,
 			)
 	}
-
-	return def
 }
 
 // move 回転処理を行い、回転後の Rotation と gltf.Node の位置を返却する
