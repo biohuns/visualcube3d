@@ -33,12 +33,11 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.URLFormat)
 	r.Use(middleware.Timeout(10 * time.Second))
 	r.Use(cors.AllowAll().Handler)
-	r.Use(middleware.Compress(5, ContentTypeGltf, ContentTypeGlb))
+	r.Use(middleware.Compress(5, ContentTypeGltf))
 
-	r.Get("/cube", getCubeHandler)
+	r.Get("/cube.gltf", getCubeHandler)
 
 	fmt.Println("listening...")
 	if err := http.ListenAndServe(":"+port, r); err != nil {

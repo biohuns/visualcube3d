@@ -83,12 +83,7 @@ var (
 	quaternionL2   = quaternion.FromEuler(0, 0, -degree180)
 )
 
-var (
-	gltfDefaultDoc = new(gltf.Document)
-	glbDefaultDoc  = new(gltf.Document)
-	gltfUnlitDoc   = new(gltf.Document)
-	glbUnlitDoc    = new(gltf.Document)
-)
+var gltfDoc = new(gltf.Document)
 
 func initCube() error {
 	sFS, err := fs.New()
@@ -96,57 +91,26 @@ func initCube() error {
 		return err
 	}
 
-	gltfDefault, err := sFS.Open("/cube.gltf")
+	gltfFile, err := sFS.Open("/cube.gltf")
 	if err != nil {
 		return err
 	}
-	if err := gltf.NewDecoder(gltfDefault).Decode(gltfDefaultDoc); err != nil {
-		return err
-	}
-
-	glbDefault, err := sFS.Open("/cube.glb")
-	if err != nil {
-		return err
-	}
-	if err := gltf.NewDecoder(glbDefault).Decode(glbDefaultDoc); err != nil {
-		return err
-	}
-
-	gltfUnlit, err := sFS.Open("/cube_unlit.gltf")
-	if err != nil {
-		return err
-	}
-	if err := gltf.NewDecoder(gltfUnlit).Decode(gltfUnlitDoc); err != nil {
-		return err
-	}
-
-	glbUnlit, err := sFS.Open("/cube_unlit.glb")
-	if err != nil {
-		return err
-	}
-	if err := gltf.NewDecoder(glbUnlit).Decode(glbUnlitDoc); err != nil {
+	if err := gltf.NewDecoder(gltfFile).Decode(gltfDoc); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func generateCube(algorithm []string, isBinary bool, isUnlit bool) ([]byte, error) {
+func generateCube(algorithm []string) ([]byte, error) {
 	var (
 		doc gltf.Document
 		err error
 		def *Definition
 	)
 
-	switch {
-	case isBinary && isUnlit:
-		err = deepcopy.Copy(&doc, glbUnlitDoc)
-	case isBinary:
-		err = deepcopy.Copy(&doc, glbDefaultDoc)
-	case isUnlit:
-		err = deepcopy.Copy(&doc, gltfUnlitDoc)
-	default:
-		err = deepcopy.Copy(&doc, gltfDefaultDoc)
+	if err = deepcopy.Copy(&doc, gltfDoc); err != nil {
+		return nil, err
 	}
 
 	def, err = nodeToDefinition(doc.Nodes)
@@ -177,7 +141,6 @@ func generateCube(algorithm []string, isBinary bool, isUnlit bool) ([]byte, erro
 
 	buffer := new(bytes.Buffer)
 	e := gltf.NewEncoder(buffer)
-	e.AsBinary = isBinary
 	if err := e.Encode(&doc); err != nil {
 		return nil, err
 	}

@@ -3,6 +3,9 @@
         "generator" : "Khronos glTF Blender I/O v1.3.48",
         "version" : "2.0"
     },
+    "extensionsUsed" : [
+        "KHR_materials_unlit"
+    ],
     "scene" : 0,
     "scenes" : [
         {
@@ -432,11 +435,9 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
+            "extensions" : {
+                "KHR_materials_unlit" : {}
+            },
             "name" : "White",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -444,17 +445,13 @@
                     1,
                     1,
                     1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
+                ]
             }
         },
         {
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
+            "extensions" : {
+                "KHR_materials_unlit" : {}
+            },
             "name" : "BaseColor",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -462,18 +459,14 @@
                     0,
                     0,
                     1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 1
+                ]
             }
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
+            "extensions" : {
+                "KHR_materials_unlit" : {}
+            },
             "name" : "Red",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -481,18 +474,14 @@
                     0,
                     0,
                     1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
+                ]
             }
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
+            "extensions" : {
+                "KHR_materials_unlit" : {}
+            },
             "name" : "Green",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -500,18 +489,14 @@
                     0.3140000104904175,
                     0,
                     1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
+                ]
             }
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
+            "extensions" : {
+                "KHR_materials_unlit" : {}
+            },
             "name" : "Orange",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -519,18 +504,14 @@
                     0.2709999978542328,
                     0,
                     1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
+                ]
             }
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
+            "extensions" : {
+                "KHR_materials_unlit" : {}
+            },
             "name" : "Blue",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -538,18 +519,14 @@
                     0,
                     1,
                     1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
+                ]
             }
         },
         {
             "doubleSided" : true,
-            "emissiveFactor" : [
-                0,
-                0,
-                0
-            ],
+            "extensions" : {
+                "KHR_materials_unlit" : {}
+            },
             "name" : "Yellow",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -557,9 +534,7 @@
                     0.8429999947547913,
                     0,
                     1
-                ],
-                "metallicFactor" : 0,
-                "roughnessFactor" : 0.5
+                ]
             }
         }
     ],
