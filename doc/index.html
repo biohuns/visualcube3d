@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Import the component -->
+    <script
+      type="module"
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"
+    ></script>
+    <style>
+      html,
+      body {
+        width: 100%;
+        text-align: center;
+      }
+      main {
+        display: flex;
+        justify-content: center;
+      }
+    </style>
+    <title>VisualCube3D</title>
+  </head>
+  <body>
+    <h1>VisualCube3D</h1>
+    <a href="https://github.com/c20820/visualcube3d" target="_blank">
+      https://github.com/c20820/visualcube3d
+    </a>
+    <main>
+      <!-- Use it like any other HTML element -->
+      <model-viewer
+        src="http://localhost:8080/cube.gltf"
+        auto-rotate
+        camera-controls
+        style="height: 250px; width: 250px"
+      ></model-viewer>
+
+      <model-viewer
+        src="http://localhost:8080/cube.gltf?alg=F2+L2+R2+D2+U+F2+D2+L2+F2+U%27+B2+R%27+D%27+U2+L%27+R2+D2+R2+U2+F%27+U2"
+        auto-rotate
+        camera-controls
+        style="height: 250px; width: 250px"
+      ></model-viewer>
+    </main>
+  </body>
+</html>
